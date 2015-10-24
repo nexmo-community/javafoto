@@ -40,12 +40,23 @@ $pimple['darkroom'] = function($c) {
 };
 
 $pimple['photographer'] = function($c) {
-    $photographer = new \TekBooth\Workers\Photographer($c['camera'], $c['pubnub'], $c['darkroom']);
+    $config = $c['config'];
+    $photographer = new \TekBooth\Workers\Photographer(
+        $c['camera'],
+        $c['pubnub'],
+        $c['darkroom'],
+        $config['channel']
+    );
     return new \TekBooth\Daemon\ClosureDaemon($photographer, [$photographer, 'setup']);
 };
 
 $pimple['developer'] = function($c) {
-    $developer = new \TekBooth\Workers\Developer($c['camera'], $c['darkroom'], new \Imagine\Gd\Imagine(), 'templates/watermark.png');
+    $developer = new \TekBooth\Workers\Developer(
+        $c['camera'],
+        $c['darkroom'],
+        new \Imagine\Gd\Imagine(),
+        'templates/watermark.png'
+    );
     return new \TekBooth\Daemon\ClosureDaemon($developer, [$developer, 'setup']);
 };
 
@@ -55,7 +66,14 @@ $pimple['sms'] = function($c) {
 
 $pimple['assistant'] = function($c) {
     $config = $c['config'];
-    return new \TekBooth\Controller\Assistant($c['pubnub'], $c['sms'], $config['nexmo']['from'], './vxml', $config['github']['url']);
+    return new \TekBooth\Controller\Assistant(
+        $c['pubnub'],
+        $config['channel'],
+        $c['sms'],
+        $config['nexmo']['from'],
+        './vxml',
+        $config['github']['url']
+    );
 };
 
 return $pimple;

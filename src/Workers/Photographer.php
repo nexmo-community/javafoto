@@ -1,6 +1,7 @@
 <?php
 namespace TekBooth\Workers;
 use Pubnub\Pubnub;
+use TekBooth\Daemon\ClosureDaemon;
 use TekBooth\Service\Darkroom\GithubDarkroom;
 use TekBooth\Service\GoPro\Client as GoPro;
 
@@ -29,62 +30,84 @@ class Photographer
      */
     protected $darkroom;
 
-    public function __construct(GoPro $gopro, Pubnub $pubnub, GithubDarkroom $githubDarkroom)
+    /**
+     * @var string
+     */
+    protected $channel;
+
+    /**
+     * @var ClosureDaemon
+     */
+    protected $daemon;
+
+    public function __construct(GoPro $gopro, Pubnub $pubnub, GithubDarkroom $githubDarkroom, $channel)
     {
         $this->gopro = $gopro;
         $this->pubnub = $pubnub;
         $this->darkroom = $githubDarkroom;
+        $this->channel = $channel;
     }
 
-    public function __invoke($daemon)
+    public function process($data)
     {
+        $this->daemon->tick();
+
+        //grab session id and number
+        $data['message'] = array_merge([
+            'count' => 1,
+            'mode'  => 'photo',
+            'delay' => 0
+        ],$data['message']);
+
+        $session = $data['message']['session'];
+        $number  = $data['message']['number'];
+        $mode    = $data['message']['mode'];
+        $count   = $data['message']['count'];
+        $delay   = $data['message']['delay'];
+
+        if(!$session){
+            error_log('no session');
+            return $this->daemon->run;
+        }
+
+        error_log('message data: ' . json_encode($data['message']));
+
+        if($delay){
+            sleep($delay);
+        }
+
+        //take photo
+        switch($mode){
+            case 'photo':
+            default:
+                error_log('taking photo');
+                $this->gopro->shutter();
+                sleep(2);
+                break;
+        }
+
+        $last = $this->gopro->getLastFile(GoPro::FILTER_PHOTO);
+        error_log('got last file: ' . $last);
+
+        error_log('adding photo to session: ' . $last);
+        $this->darkroom->addPhoto($session, $last, $number);
+
+        $this->daemon->tick();
+        return $this->daemon->run;
+    }
+
+    public function __invoke(ClosureDaemon $daemon)
+    {
+        $this->daemon = $daemon;
+
         $camera = $this->gopro;
         $darkroom = $this->darkroom;
 
-        error_log('subscribed to channel');
-        $this->pubnub->subscribe('tekbooth', function($data) use ($camera, $darkroom, $daemon){
-            //grab session id and number
-            $data['message'] = array_merge([
-                'count' => 1,
-                'mode'  => 'photo',
-                'delay' => 0
-            ],$data['message']);
 
-            $session = $data['message']['session'];
-            $number  = $data['message']['number'];
-            $mode    = $data['message']['mode'];
-            $count   = $data['message']['count'];
-            $delay   = $data['message']['delay'];
+        error_log('subscribed to channel: ' . $this->channel);
+        $this->pubnub->subscribe($this->channel, [$this, 'process']);
 
-            if(!$session){
-                error_log('no session');
-                return $daemon->run;
-            }
-
-            error_log('message data: ' . json_encode($data['message']));
-
-            if($delay){
-                sleep($delay);
-            }
-
-            //take photo
-            switch($mode){
-                case 'photo':
-                default:
-                    error_log('taking photo');
-                    $camera->shutter();
-                    sleep(2);
-                    break;
-            }
-
-            $last = $camera->getLastFile($camera::FILTER_PHOTO);
-            error_log('got last file: ' . $last);
-
-            error_log('adding photo to session: ' . $last);
-            $darkroom->addPhoto($session, $last, $number);
-
-            return $daemon->run;
-        });
+        return $this->daemon->run;
     }
 
     public function setup()

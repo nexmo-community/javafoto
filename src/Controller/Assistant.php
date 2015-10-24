@@ -39,9 +39,15 @@ class Assistant
      */
     protected $from;
 
-    public function __construct(Pubnub $pubnub, Sms $sms, $from, $vxmlPath, $web)
+    /**
+     * @var string
+     */
+    protected $channel;
+
+    public function __construct(Pubnub $pubnub, $channel, Sms $sms, $from, $vxmlPath, $web)
     {
         $this->pubnub = $pubnub;
+        $this->channel = $channel;
         $this->vxmlPath = $vxmlPath;
         $this->sms = $sms;
         $this->web = $web;
@@ -62,7 +68,8 @@ class Assistant
             'number'  => $number,
         ]);
 
-        $this->pubnub->publish('tekbooth', $data);
+        error_log('sending to: ' . $this->channel);
+        $this->pubnub->publish($this->channel, $data);
     }
 
     public function sendLink($number, $callid)

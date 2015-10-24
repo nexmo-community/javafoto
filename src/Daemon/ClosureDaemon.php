@@ -66,14 +66,17 @@ class ClosureDaemon {
         $callback = $this->callback;
         $this->count = 0;
         error_log('daemon starting...');
-        while($this->run){
+        $run = true;
+        while($this->run AND $run){
             $this->count++;
-
             $run = $callback($this);
-
-            //only process the signals here
-            pcntl_signal_dispatch();
+            $this->tick();
         }
+    }
+
+    public function tick()
+    {
+        pcntl_signal_dispatch();
     }
 
     public function signalStop($signal)
