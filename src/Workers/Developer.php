@@ -106,6 +106,8 @@ class Developer
             error_log('no new files, waiting a bit');
             sleep(60);
         }
+
+        return true;
     }
 
 }
