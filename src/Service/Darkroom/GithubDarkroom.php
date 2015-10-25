@@ -95,7 +95,7 @@ class GithubDarkroom implements DarkroomInterface
             $response = $this->client->api('repo')->contents()->update($this->user, $this->repo, $path, $content, 'Adding Photo ' . PHP_EOL . $file, $info['sha'], $this->branch);
         } else {
             $response = $this->client->api('repo')->contents()->create($this->user, $this->repo, $path, $content, 'Adding Page and Photo ' . PHP_EOL . $file, $this->branch);
-            $this->addSession($session, $number);
+            $this->addSession($session, $number, $file);
         }
     }
 
@@ -132,7 +132,7 @@ class GithubDarkroom implements DarkroomInterface
         $response = $this->client->api('repo')->contents()->create($this->user, $this->repo, $path, $content, 'Adding Photo' . PHP_EOL . $file, $this->branch);
     }
 
-    public function addSession($session, $number)
+    public function addSession($session, $number, File $file)
     {
         $owner = md5($number);
         $path = 'data.json';
@@ -156,7 +156,8 @@ class GithubDarkroom implements DarkroomInterface
             $data['sessions'][$session] = [
                 'id' => $session,
                 'date' => time(),
-                'owner' => $owner
+                'owner' => $owner,
+                'cover' => $this->getPhotoFilename($file)
             ];
         }
 
@@ -209,7 +210,7 @@ class GithubDarkroom implements DarkroomInterface
 
     protected function getPhotoFilename(File $file, $size = null)
     {
-        return 'photos/tek2015-' . $file->getSequence() . ($size?'-'.$size:'') . '.jpg';
+        return 'photos/' . $file->getSequence() . ($size?'-'.$size:'') . '.jpg';
     }
 
     protected function niceHtml($content)

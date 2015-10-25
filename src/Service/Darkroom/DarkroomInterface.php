@@ -11,5 +11,5 @@ interface DarkroomInterface
 
     public function caption($session, $caption);
 
-    public function addSession($session, $number);
+    public function addSession($session, $number, File $file);
 }
