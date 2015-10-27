@@ -29,6 +29,12 @@
             "date": 1445970722,
             "owner": "e3e845b50cc65694dd1e8b30878108ed",
             "cover": "photos\/6672.jpg"
+        },
+        "ad4807e5c54d8692c62063f2ec80d43f-1": {
+            "id": "ad4807e5c54d8692c62063f2ec80d43f-1",
+            "date": 1445977168,
+            "owner": "fdaeb6403bf24d01e38e3efdad1d57d9",
+            "cover": "photos\/6676.jpg"
         }
     },
     "owners": {
@@ -70,6 +76,15 @@
                     "id": "1926dd80a51b55f112186af44e8966c3-1",
                     "date": 1445970722,
                     "owner": "e3e845b50cc65694dd1e8b30878108ed"
+                }
+            }
+        },
+        "fdaeb6403bf24d01e38e3efdad1d57d9": {
+            "sessions": {
+                "ad4807e5c54d8692c62063f2ec80d43f-1": {
+                    "id": "ad4807e5c54d8692c62063f2ec80d43f-1",
+                    "date": 1445977168,
+                    "owner": "fdaeb6403bf24d01e38e3efdad1d57d9"
                 }
             }
         }
