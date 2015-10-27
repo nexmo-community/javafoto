@@ -1,11 +1,5 @@
 {
     "sessions": {
-        "c1251f175b2deb7b342d16eefb6f986a-1": {
-            "id": "c1251f175b2deb7b342d16eefb6f986a-1",
-            "date": 1445836148,
-            "owner": "238dccf320c4e539b388965a56b9fa71",
-            "cover": "photos\/6650.jpg"
-        },
         "90a3f7eeb7fe4ac889785fa46b48b927-1": {
             "id": "90a3f7eeb7fe4ac889785fa46b48b927-1",
             "date": 1445886493,
@@ -34,11 +28,6 @@
     "owners": {
         "238dccf320c4e539b388965a56b9fa71": {
             "sessions": {
-                "c1251f175b2deb7b342d16eefb6f986a-1": {
-                    "id": "c1251f175b2deb7b342d16eefb6f986a-1",
-                    "date": 1445836148,
-                    "owner": "238dccf320c4e539b388965a56b9fa71"
-                },
                 "90a3f7eeb7fe4ac889785fa46b48b927-1": {
                     "id": "90a3f7eeb7fe4ac889785fa46b48b927-1",
                     "date": 1445886493,
