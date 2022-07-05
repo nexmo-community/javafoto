@@ -21,7 +21,7 @@
   ],
   "require": {
     "edwbaker/GoProPHP": "1.0",
-    "guzzlehttp/guzzle": "^5.0@dev",
+    "guzzlehttp/guzzle": "^6.0.0@dev",
     "paquettg/php-html-parser": "dev-master",
     "pubnub/pubnub": "dev-master",
     "knplabs/github-api": "^1.4@dev",
